@@ -1,0 +1,23 @@
+experiments/*
+data/*/processed/*
+runs/*
+
+# IDE / OS
+.cache/
+.ccls-cache/
+.direnv/
+.DS_Store
+.envrc
+.idea/
+.swiftpm
+.vs/
+.vscode/
+nppBackup
+
+# Python
+/.venv
+__pycache__/
+*/poetry.lock
+poetry.toml
+
+
