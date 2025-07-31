@@ -4,9 +4,21 @@ import os
 import torch.nn.functional as F
 from collections import OrderedDict
 from torch.utils.data.dataloader import DataLoader
+from dataclasses import dataclass
+
+import tyro
+@dataclass
+class Args:
+    esm2_model: str = 'esm2_t33_650M_UR50D'
+    "you can use larger models such as `esm2_t48_15B_UR50D` for better performance, but it requires more memory"
+    dataset: str = 'davis'
+    "dataset to process, can be 'davis' or 'kiba'"
+
+hp = tyro.cli(Args)
+    
 
 # Load model and alphabet from pre-trained esm2 model by Facebook AI Research
-model, alphabet = torch.hub.load("facebookresearch/esm:main", "esm2_t48_15B_UR50D")
+model, alphabet = torch.hub.load("facebookresearch/esm:main", hp.esm2_model)
 
 # Set the device to GPU if available
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -14,7 +26,7 @@ model = model.to(device)
 model.eval()  # Set model to evaluation mode (disables dropout for deterministic results)
 
 # Load protein data
-dataset = 'davis' # 'kiba'
+dataset = hp.dataset  # 'davis' or 'kiba'
 data_path = f'data/{dataset}'
 proteins = json.load(open(os.path.join(data_path, "proteins.txt")), object_pairs_hook=OrderedDict)  
 proteins = [(name, seq) for name, seq in proteins.items()]
@@ -23,8 +35,8 @@ proteins = [(name, seq) for name, seq in proteins.items()]
 dataloader = DataLoader(proteins, batch_size=2, shuffle=False, collate_fn=lambda x: x)
 
 # Define the directory path to save processed protein data
-save_protein_path = os.path.join(data_path, 'proteins',exist_ok=True)
-os.makedirs(save_protein_path)
+save_protein_path = os.path.join(data_path, 'proteins')
+os.makedirs(save_protein_path, exist_ok=True)
 
 # Process each batch in the dataloader and save protein representations
 for i, data in enumerate(dataloader):
