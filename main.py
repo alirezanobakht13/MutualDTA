@@ -108,7 +108,7 @@ def main(args):
     train_loader = DataLoader(train_data, batch_size=args.train_batch_size, shuffle=True, collate_fn=train_data.collate_fn)
     test_loader = DataLoader(test_data, batch_size=args.test_batch_size, shuffle=False, collate_fn=test_data.collate_fn)
 
-    model = modeling().to(device)
+    model = modeling(args.n_drug_features, args.n_protein_features, args.n_edge_features).to(device)
     os.makedirs(args.save_path,exist_ok=True)
     model_file_path = os.path.join(args.save_path,'model_' + model_st + '_' + dataset + '.model')
     result_file_path = os.path.join(args.save_path,'result_' + model_st + '_' + dataset + '.csv')
@@ -161,8 +161,8 @@ if __name__=="__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--device', type=str, default='cuda')
     parser.add_argument('--dataset', type=str, default='davis')
-    parser.add_argument("--train_batch_size", type=int, default=750)
-    parser.add_argument("--test_batch_size", type=int, default=750)
+    parser.add_argument("--train_batch_size", type=int, default=128)
+    parser.add_argument("--test_batch_size", type=int, default=128)
     parser.add_argument("--max_epoch", type=int, default=2500)
     parser.add_argument("--lr", type=float, default=0.0008)
     parser.add_argument("--data_path", type=str,default='./data')
@@ -174,6 +174,9 @@ if __name__=="__main__":
 
     parser.add_argument("--model", default='MutualDTA', type=str)
     parser.add_argument("--cold_start", default='',help='drug or protein or None', type=str)
+    parser.add_argument("--n_durg_features", type=int, default=256, help='number of drug features')
+    parser.add_argument("--n_protein_features", type=int, default=256, help='number of protein features')
+    parser.add_argument("--n_edge_features", type=int, default=8, help='number of edge features')
 
     args = parser.parse_args()
     main(args)
