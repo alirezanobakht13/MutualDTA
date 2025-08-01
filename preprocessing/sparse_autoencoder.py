@@ -3,15 +3,29 @@ import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
 from tqdm import trange
 
-# Model and training configuration
-dataset_name = 'davis'    # Dataset name
-input_dim = 5120          # Input dimension (e.g., for a 28x28 grayscale image this would be 784)
-hidden_dim = 256          # Dimension of the hidden layer in the autoencoder
-lr = 0.001                # Learning rate
-alpha = 1e-8              # Regularization parameter for L1 loss
-num_epochs = 80           # Number of training epochs
-batch_size = 64           # Batch size for training
-device = 'cuda' if torch.cuda.is_available() else 'cpu'  # Use GPU if available
+import tyro
+from dataclasses import dataclass
+
+@dataclass
+class Config:
+    dataset_name: str = 'davis'    # Dataset name
+    input_dim: int = 1280          # Input dimension
+    hidden_dim: int = 256          # Hidden layer dimension
+    lr: float = 0.001              # Learning rate
+    alpha: float = 1e-8            # L1 regularization parameter
+    num_epochs: int = 80           # Number of training epochs
+    batch_size: int = 64           # Batch size
+    device: str = 'cuda' if torch.cuda.is_available() else 'cpu'  # Device
+
+config = tyro.cli(Config)
+dataset_name = config.dataset_name
+input_dim = config.input_dim
+hidden_dim = config.hidden_dim
+lr = config.lr
+alpha = config.alpha
+num_epochs = config.num_epochs
+batch_size = config.batch_size
+device = config.device
 
 # Define a simple MLP-based autoencoder model
 class SimpleMLPAutoEncoder(nn.Module):
