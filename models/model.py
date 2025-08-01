@@ -16,12 +16,11 @@ from torch_geometric.utils import degree
 from mamba_ssm import Mamba2
 
 class MutualDTA(torch.nn.Module):
-    def __init__(self, n_durg_features=512, n_protein_features=512, n_edge_features=6):
+    def __init__(self, n_durg_features=512, n_protein_features=512, n_edge_features=6, protein_hidden_dim=256):
 
         super(MutualDTA, self).__init__()
 
         drug_hidden_dim = 128
-        protein_hidden_dim = 128
         dropout_rate = 0.3 # dropout rate
 
         # DMPNN 
