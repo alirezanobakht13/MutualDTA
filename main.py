@@ -108,7 +108,7 @@ def main(args):
     train_loader = DataLoader(train_data, batch_size=args.train_batch_size, shuffle=True, collate_fn=train_data.collate_fn)
     test_loader = DataLoader(test_data, batch_size=args.test_batch_size, shuffle=False, collate_fn=test_data.collate_fn)
 
-    model = modeling(args.n_drug_features, args.n_protein_features, args.n_edge_features).to(device)
+    model = modeling(args.n_durg_features, args.n_protein_features, args.n_edge_features).to(device)
     os.makedirs(args.save_path,exist_ok=True)
     model_file_path = os.path.join(args.save_path,'model_' + model_st + '_' + dataset + '.model')
     result_file_path = os.path.join(args.save_path,'result_' + model_st + '_' + dataset + '.csv')
